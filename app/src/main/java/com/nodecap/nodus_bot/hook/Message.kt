@@ -1,9 +1,12 @@
 package com.nodecap.nodus_bot.hook
 
 import com.gh0u1l5.wechatmagician.spellbook.interfaces.IMessageStorageHook
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.android.extension.responseJson
 import com.nodecap.nodus_bot.hook.SendMsgHooker.wxMsgSplitStr
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
+import kotlin.math.log
 
 object Message : IMessageStorageHook {
     override fun onMessageStorageInserted(msgId: Long, msgObject: Any) {
@@ -23,7 +26,12 @@ object Message : IMessageStorageHook {
                 // 将 wx_id 和 回复的内容用分隔符分开
                 val content = "$field_talker$wxMsgSplitStr$replyContent"
                 val success = Methods.ChattingFooterEventImpl_SendMsg.invoke(this, content) as Boolean
-                XposedBridge.log("reply msg success = $success")
+            }
+
+            // experimental request
+
+            Fuel.get("https://api.coinmarketcap.com/v2/listings/").responseJson { request, response, result ->
+                print(result)
             }
         }
     }

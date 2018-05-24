@@ -39,4 +39,6 @@ dependencies {
     implementation 'com.github.gh0u1l5:wechat-spellbook:0.0.3'
     // 添加Spellbook源码方便查询注释
     implementation 'com.github.gh0u1l5:wechat-spellbook:0.0.3:sources'
+
+    implementation 'com.github.kittinunf.fuel:fuel-android:+' //for Android
 }
