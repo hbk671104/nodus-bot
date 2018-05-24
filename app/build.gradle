@@ -36,7 +36,7 @@ dependencies {
     compileOnly 'de.robv.android.xposed:api:53:sources'
 
     // 添加编译好的Spellbook库
-    implementation 'com.github.gh0u1l5:wechat-spellbook:0.0.6'
+    implementation 'com.github.gh0u1l5:wechat-spellbook:0.0.3'
     // 添加Spellbook源码方便查询注释
-    implementation 'com.github.gh0u1l5:wechat-spellbook:0.0.6:sources'
+    implementation 'com.github.gh0u1l5:wechat-spellbook:0.0.3:sources'
 }
