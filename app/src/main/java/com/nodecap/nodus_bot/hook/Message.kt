@@ -21,7 +21,7 @@ object Message : IMessageStorageHook {
         }
         if (field_type == 1) {
             // experimental request
-            Fuel.get("http://192.168.1.189:9001/api/nodus-bot?content=$field_content&name=$field_talker&topic=$field_type").responseJson { request, response, result ->
+            Fuel.get("http://47.75.65.198:9001/api/nodus-bot?content=$field_content&name=$field_talker").responseJson { request, response, result ->
                 val content = result.component1()?.obj()?.getString("data")
                 if (content != "empty_message") {
                     Objects.ChattingFooterEventImpl?.apply {
