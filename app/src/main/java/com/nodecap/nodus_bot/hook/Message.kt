@@ -6,7 +6,6 @@ import com.github.kittinunf.fuel.android.extension.responseJson
 import com.nodecap.nodus_bot.hook.SendMsgHooker.wxMsgSplitStr
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
-import kotlin.math.log
 
 object Message : IMessageStorageHook {
     override fun onMessageStorageInserted(msgId: Long, msgObject: Any) {
@@ -21,17 +20,34 @@ object Message : IMessageStorageHook {
             return
         }
         if (field_type == 1) {
-            val replyContent = "$field_content"
-            Objects.ChattingFooterEventImpl?.apply {
-                // 将 wx_id 和 回复的内容用分隔符分开
-                val content = "$field_talker$wxMsgSplitStr$replyContent"
-                val success = Methods.ChattingFooterEventImpl_SendMsg.invoke(this, content) as Boolean
-            }
-
             // experimental request
+            Fuel.get("http://192.168.1.189:9001/api/nodus-bot?content=$field_content&name=$field_talker&topic=$field_type").responseJson { request, response, result ->
+                val content = result.component1()?.obj()?.getString("data")
+                if (content != "empty_message") {
+                    Objects.ChattingFooterEventImpl?.apply {
+                        val replyContent = "$field_talker$wxMsgSplitStr$content"
+                        val success = Methods.ChattingFooterEventImpl_SendMsg.invoke(this, replyContent) as Boolean
+                        if (success) {
+                            XposedBridge.log("reply success!")
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-            Fuel.get("https://api.coinmarketcap.com/v2/listings/").responseJson { request, response, result ->
-                print(result)
+    private fun printMsgObj(msg: Any) {
+        val fieldNames = msg::class.java.fields
+        fieldNames.forEach {
+            val field = it.get(msg)
+            if (field is Array<*>) {
+                val s = StringBuffer()
+                field.forEach {
+                    s.append(it.toString() + " , ")
+                }
+                XposedBridge.log("$it = $s")
+            } else {
+                XposedBridge.log("$it = $field")
             }
         }
     }
